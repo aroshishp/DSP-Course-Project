@@ -26,9 +26,9 @@ filtered = real(ifft(filtered_freq));
 
 % Play signals (adjust fs according to your sampling rate)
 fs = 44100; % Typical sampling rate for speech
-soundsc(noisy, fs); 
-pause(length(noisy)/fs + 1);
-soundsc(filtered, fs);
+% soundsc(noisy, fs); 
+% pause(length(noisy)/fs + 1);
+% soundsc(filtered, fs);
 
 % Calculate SNR metrics (clean signal only used here)
 original_noise = noisy - clean;
@@ -66,8 +66,8 @@ filtered = real(ifft(filtered_freq));
 
 % Playback and SNR calculation (clean only used here)
 fs = 44100;
-soundsc(noisy, fs); pause(length(noisy)/fs + 1);
-soundsc(filtered, fs);
+% soundsc(noisy, fs); pause(length(noisy)/fs + 1);
+% soundsc(filtered, fs);
 
 % SNR metrics
 original_noise = noisy - clean;
