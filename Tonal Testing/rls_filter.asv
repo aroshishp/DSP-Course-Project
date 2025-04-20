@@ -1,0 +1,37 @@
+function enhanced_signal = rls_filter(noisy_speech, external_noise, frame_size, num_taps, lambda, notch)
+    delta = 0.001; 
+    w_rls = zeros(num_taps, 1); 
+    P = (1/delta) * eye(num_taps); 
+    fs = 44100;
+
+    if (notch == 1)
+        notchFreq = 1000;
+        Q = 35;
+    end
+
+    enhanced_signal = zeros(size(noisy_speech));
+
+    for i = 1:frame_size:length(noisy_speech)-frame_size
+        x = external_noise(i:i+frame_size-1);
+
+        if(notch == 1)
+            x = practical_notch_filter(x, fs, notchFreq, Q);
+        end
+
+        d = noisy_speech(i:i+frame_size-1);
+        X = zeros(frame_size, num_taps);
+        for j = num_taps:frame_size
+            X(j, :) = flip(x(j-num_taps+1:j)); 
+        end
+
+        for j = num_taps:frame_size
+            x_j = X(j, :)'; 
+            K = (P * x_j) / (lambda + x_j' * P * x_j);
+            v_hat = w_rls' * x_j; 
+            e = d(j) - v_hat;
+            w_rls = w_rls + K * e;
+            P = (P - K * x_j' * P) / lambda;
+            enhanced_signal(i + j - 1) = e;
+        end
+    end
+end
